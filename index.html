@@ -14,11 +14,12 @@ const CONFIG = {
     bio: "bio.html",                                  
     soundcloud: "https://soundcloud.com/cancela25",
     residentAdvisor: "https://ra.co/dj/cancela",
-    contactEmail: "jijeijony@gmail.com"
+    contactEmail: "jijeijony@gmail.com",
+    latestMedia: "https://soundcloud.com/coletivo56/cancela?in=cancela25/sets/mixed-by-me",
   },
 
   /* ============================================================
-     
+     images
      ============================================================ */
   images: ["images/image00001.jpeg",
            "images/image00002.jpeg",
@@ -169,6 +170,7 @@ const CONFIG = {
     <a id="link-bio" href="#">bio</a>
     <a id="link-soundcloud" href="#" target="_blank" rel="noopener">soundcloud</a>
     <a id="link-ra" href="#" target="_blank" rel="noopener">resident advisor</a>
+    <a id="link-media" href="#" target="_blank" rel="noopener">latest media</a>
     <a id="link-contact" href="#">contact</a>
   </nav>
   <footer>est. 2026</footer>
@@ -179,6 +181,7 @@ const CONFIG = {
   document.getElementById('link-bio').href = CONFIG.links.bio;
   document.getElementById('link-soundcloud').href = CONFIG.links.soundcloud;
   document.getElementById('link-ra').href = CONFIG.links.residentAdvisor;
+  document.getElementById('link-media').href = CONFIG.links.latestMedia;
   document.getElementById('link-contact').href = 'mailto:' + CONFIG.links.contactEmail;
 
   // pick one random background image per page load
