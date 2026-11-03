@@ -11,37 +11,42 @@
    ============================================================ */
 const CONFIG = {
   links: {
-    bio: "bio.html",                                  
+    bio: "bio.html",
     soundcloud: "https://soundcloud.com/cancela25",
     residentAdvisor: "https://ra.co/dj/cancela",
     contactEmail: "jijeijony@gmail.com",
   },
 
   /* ============================================================
-     images
+     EDIT ME — background images
      ============================================================ */
-  images: ["images/image00001.jpeg",
-           "images/image00002.jpeg",
-           "images/image00003.jpeg",
-           "images/image00004.jpeg",
-           "images/image00005.jpeg",
-           "images/image00006.jpeg",
-           "images/image00007.jpeg",
-           "images/image00008.jpeg",
-           "images/image00009.jpeg",
-           "images/image00010.jpeg",
-           "images/image00011.jpeg",
-           "images/image00012.jpeg",
-           "images/image00013.jpeg",
-           "images/image00014.jpeg",
-           "images/image00015.jpeg",
-     ]
-   latestMedia: [
-  { text: "Soundcloud Mix for Colectivo56", url: "https://soundcloud.com/coletivo56/cancela?in=cancela25/sets/mixed-by-me" },
-  { text: "Collect Lisbon Mix",    url: "https://youtu.be/OGpWWLZOSk4" },
-      ],
+  images: [
+    "images/image00001.jpeg",
+    "images/image00002.jpeg",
+    "images/image00003.jpeg",
+    "images/image00004.jpeg",
+    "images/image00005.jpeg",
+    "images/image00006.jpeg",
+    "images/image00007.jpeg",
+    "images/image00008.jpeg",
+    "images/image00009.jpeg",
+    "images/image00010.jpeg",
+    "images/image00011.jpeg",
+    "images/image00012.jpeg",
+    "images/image00013.jpeg",
+    "images/image00014.jpeg",
+    "images/image00015.jpeg",
+  ],
+
+  /* ============================================================
+     EDIT ME — latest media list
+     text = what visitors see, url = where it goes
+     ============================================================ */
+  latestMedia: [
+    { text: "Soundcloud Mix for Colectivo56", url: "https://soundcloud.com/coletivo56/cancela?in=cancela25/sets/mixed-by-me" },
+    { text: "Collect Lisbon Mix", url: "https://youtu.be/OGpWWLZOSk4" },
+  ],
 };
-   
 </script>
 
 <style>
@@ -158,28 +163,33 @@ const CONFIG = {
     letter-spacing: 0.03em;
   }
 
+  /* latest media list */
+  #latest-media{ margin-top: 0.4em; }
+
+  .media-title{
+    font-size: clamp(1.1rem, 2.6vw, 1.6rem);
+    text-transform: lowercase;
+    letter-spacing: 0.02em;
+    color: var(--ink-dim);
+  }
+
+  #media-list{
+    list-style: none;
+    margin: 0.5em 0 0;
+    padding-left: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+  }
+
+  #media-list a{ font-size: clamp(0.9rem, 2vw, 1.1rem); }
+
   @media (prefers-reduced-motion: reduce){
     #bg-layer img{
       animation: fade-in 0.6s ease forwards;
     }
   }
 </style>
-   #latest-media{ margin-top: 0.4em; }
-.media-title{
-  font-size: clamp(1.1rem, 2.6vw, 1.6rem);
-  text-transform: lowercase;
-  letter-spacing: 0.02em;
-  color: var(--ink-dim);
-}
-#media-list{
-  list-style: none;
-  margin: 0.5em 0 0;
-  padding-left: 1em;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4em;
-}
-#media-list a{ font-size: clamp(0.9rem, 2vw, 1.1rem); }
 </head>
 <body>
 
@@ -191,9 +201,9 @@ const CONFIG = {
     <a id="link-soundcloud" href="#" target="_blank" rel="noopener">soundcloud</a>
     <a id="link-ra" href="#" target="_blank" rel="noopener">resident advisor</a>
     <div id="latest-media">
-  <span class="media-title">latest media</span>
-  <ul id="media-list"></ul>
-</div>
+      <span class="media-title">latest media</span>
+      <ul id="media-list"></ul>
+    </div>
     <a id="link-contact" href="#">contact</a>
   </nav>
   <footer>Cancela</footer>
@@ -204,22 +214,24 @@ const CONFIG = {
   document.getElementById('link-bio').href = CONFIG.links.bio;
   document.getElementById('link-soundcloud').href = CONFIG.links.soundcloud;
   document.getElementById('link-ra').href = CONFIG.links.residentAdvisor;
-  const mediaList = document.getElementById('media-list');
-if (CONFIG.latestMedia && CONFIG.latestMedia.length > 0){
-  CONFIG.latestMedia.forEach(item => {
-    const li = document.createElement('li');
-    const a = document.createElement('a');
-    a.href = item.url;
-    a.textContent = item.text;
-    a.target = '_blank';
-    a.rel = 'noopener';
-    li.appendChild(a);
-    mediaList.appendChild(li);
-  });
-} else {
-  document.getElementById('latest-media').style.display = 'none';
-}
   document.getElementById('link-contact').href = 'mailto:' + CONFIG.links.contactEmail;
+
+  // build the latest media list
+  const mediaList = document.getElementById('media-list');
+  if (CONFIG.latestMedia && CONFIG.latestMedia.length > 0){
+    CONFIG.latestMedia.forEach(item => {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = item.url;
+      a.textContent = item.text;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      li.appendChild(a);
+      mediaList.appendChild(li);
+    });
+  } else {
+    document.getElementById('latest-media').style.display = 'none';
+  }
 
   // pick one random background image per page load
   const bgLayer = document.getElementById('bg-layer');
