@@ -46,6 +46,18 @@ const CONFIG = {
     { text: "Soundcloud Mix for Colectivo56", url: "https://soundcloud.com/coletivo56/cancela?in=cancela25/sets/mixed-by-me" },
     { text: "Collect Lisbon Mix", url: "https://youtu.be/OGpWWLZOSk4" },
   ],
+
+  /* ============================================================
+     EDIT ME — pencil effect
+     enabled: true/false to switch the drawing on or off
+     colors: each new stroke picks one of these at random
+     width: line thickness in pixels
+     ============================================================ */
+  pencil: {
+    enabled: true,
+    colors: ["#000000", "#6b4423", "#ffffff"],   // black, brown, white
+    width: 2.5,
+  },
 };
 </script>
 
@@ -107,7 +119,7 @@ const CONFIG = {
 
   main{
     position: relative;
-    z-index: 1;
+    z-index: 2;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -163,6 +175,16 @@ const CONFIG = {
     letter-spacing: 0.03em;
   }
 
+  /* pencil drawing layer: sits above the photo, below the links */
+  #pencil-layer{
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+
   /* latest media list */
   #latest-media{ margin-top: 0.4em; }
 
@@ -194,6 +216,7 @@ const CONFIG = {
 <body>
 
 <div id="bg-layer"></div>
+<canvas id="pencil-layer"></canvas>
 
 <main>
   <nav>
@@ -242,6 +265,68 @@ const CONFIG = {
     img.alt = "";
     bgLayer.appendChild(img);
   }
+
+  // pencil effect: the cursor leaves a line as it moves
+  (function(){
+    const P = CONFIG.pencil;
+    const canvas = document.getElementById('pencil-layer');
+    if (!P || !P.enabled){ canvas.style.display = 'none'; return; }
+
+    const ctx = canvas.getContext('2d');
+    let dpr = window.devicePixelRatio || 1;
+
+    function resize(){
+      // keep what has already been drawn when the window size changes
+      const keep = document.createElement('canvas');
+      keep.width = canvas.width;
+      keep.height = canvas.height;
+      keep.getContext('2d').drawImage(canvas, 0, 0);
+
+      dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.drawImage(keep, 0, 0, keep.width / dpr, keep.height / dpr);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    let last = null;
+    let lastTime = 0;
+    let color = P.colors[0];
+
+    function newStroke(){
+      color = P.colors[Math.floor(Math.random() * P.colors.length)];
+    }
+    newStroke();
+
+    window.addEventListener('pointermove', e => {
+      const now = performance.now();
+      // a pause in movement starts a new stroke with a new color
+      if (last && now - lastTime > 600){ last = null; newStroke(); }
+
+      if (last){
+        // slightly thinner when moving fast, like real pencil pressure
+        const dist = Math.hypot(e.clientX - last.x, e.clientY - last.y);
+        const w = P.width * Math.max(0.6, 1.2 - dist / 80);
+        ctx.strokeStyle = color;
+        ctx.globalAlpha = 0.85;
+        ctx.lineWidth = w;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(last.x, last.y);
+        ctx.lineTo(e.clientX, e.clientY);
+        ctx.stroke();
+      }
+      last = { x: e.clientX, y: e.clientY };
+      lastTime = now;
+    });
+
+    // leaving the window lifts the pencil
+    document.addEventListener('pointerleave', () => { last = null; newStroke(); });
+    window.addEventListener('blur', () => { last = null; });
+  })();
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
